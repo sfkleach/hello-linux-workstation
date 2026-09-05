@@ -1,68 +1,62 @@
 # hello-linux-workstation
 
-Automates setting up a Linux workstation from a fresh install.
-
-## Supported distros
-
-| Family | Package manager |
-|--------|----------------|
-| Debian / Ubuntu | `apt` |
-| Fedora / RHEL | `dnf` |
-| Arch Linux | `pacman` |
+Sets up my Linux Mint workstation from a fresh install, and doubles as my
+dotfiles repo.
 
 ## Quick start
 
 ```bash
 git clone https://github.com/sfkleach/hello-linux-workstation.git
 cd hello-linux-workstation
-chmod +x setup.sh
 ./setup.sh
 ```
 
-The script is **idempotent** — safe to re-run after a failed step or to apply updates.
+`setup.sh` runs every script under `modules/` in order. Each module is
+**idempotent** — it checks what's already installed and only does the work
+that's missing, so it's safe to re-run any time (e.g. after adding a new
+module, or on a machine that already has some tools installed).
 
-## What it installs
+## What it sets up
 
-| Section | Tools |
-|---------|-------|
-| System update | Full package upgrade |
-| Essentials | `build-essential`, `curl`, `wget`, `jq`, `htop`, `tree`, `stow`, … |
-| Shell | `zsh` + Oh My Zsh |
-| Git | `git`, global config, `gh` CLI |
-| Editors | Neovim, VS Code |
-| Python | `python3`, `pip`, `pipx`, `uv` |
-| Node.js | Latest LTS via `nvm` |
-| Rust | Stable toolchain via `rustup` |
-| Go | Latest stable (opt-in, off by default) |
-| Docker | Docker Engine + `docker compose`, user added to `docker` group |
-| CLI tools | `fzf`, `ripgrep`, `bat`, `fd`, `eza`, `git-delta`, `tmux`, Starship prompt |
-| Fonts | JetBrainsMono Nerd Font |
+| Module | Installs |
+|--------|----------|
+| `05-folders.sh` | Standard top-level folders: `~/org`, `~/com`, `~/projects` |
+| `10-essentials.sh` | System upgrade, `build-essential`, `curl`, `wget`, `jq`, `htop`, `tree`, `ripgrep`, `fd-find`, `bat` |
+| `20-git.sh` | `git` + global config, SSH key (`~/.ssh/id_ed25519`), `lazygit`, SmartGit |
+| `30-python.sh` | `uv` |
+| `40-golang.sh` | Go (official tarball, `/usr/local/go`) |
+| `50-rust.sh` | Rust via `rustup` |
+| `60-node.sh` | `fnm` + Node LTS (only needed to install the Claude Code CLI below) |
+| `70-vscode.sh` | VS Code (extensions are managed manually, not by this script) |
+| `80-podman.sh` | Podman + `podman-compose` |
+| `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
 
-## Skipping sections
+## Skipping the apt update/upgrade of already-installed packages
 
-Any section can be disabled by setting its environment variable to `no` before running:
+Every `apt install` call goes through `apt_install_if_missing` in
+`lib/common.sh`, which checks `command -v` for each package's "signature"
+command before installing it — so re-running the script never re-installs
+something that's already there. Most packages share their binary name
+(`git` → `git`), but a few don't, so the call sites spell those out with a
+`package:command` override, e.g.:
 
 ```bash
-INSTALL_GO=yes INSTALL_RUST=no ./setup.sh
+apt_install_if_missing ripgrep:rg fd-find:fdfind bat:batcat
 ```
 
-| Variable | Default |
-|----------|---------|
-| `INSTALL_SYSTEM_UPDATES` | `yes` |
-| `INSTALL_ESSENTIALS` | `yes` |
-| `INSTALL_SHELL` | `yes` |
-| `INSTALL_GIT` | `yes` |
-| `INSTALL_EDITORS` | `yes` |
-| `INSTALL_PYTHON` | `yes` |
-| `INSTALL_NODE` | `yes` |
-| `INSTALL_RUST` | `yes` |
-| `INSTALL_GO` | `no` |
-| `INSTALL_DOCKER` | `yes` |
-| `INSTALL_CLI_TOOLS` | `yes` |
-| `INSTALL_FONTS` | `yes` |
+Add new packages the same way if you extend a module.
 
-## After first run
+## Shell integration
 
-- Start a new shell (or `source ~/.zshrc`) to pick up updated `PATH` entries.
-- Log out and back in to use Docker without `sudo`.
-- For Git, the script prompts for `user.name` and `user.email` the first time only.
+`setup.sh` appends one `source` line to `~/.bashrc` (guarded so it's only
+added once) pointing at `dotfiles/bashrc.d/path.sh`, which wires up `PATH`
+for cargo, Go, `uv`, and `fnm`. Start a new shell (or `source ~/.bashrc`)
+after the first run to pick it up.
+
+## Running a single module
+
+Since modules are just standalone scripts, you can re-run one on its own:
+
+```bash
+./modules/50-rust.sh
+```
