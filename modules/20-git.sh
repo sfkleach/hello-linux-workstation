@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# modules/20-git.sh — git, SSH key, lazygit, SmartGit.
+# modules/20-git.sh — git, SSH key, lazygit.
+# SmartGit lives in 99-smartgit.sh: its third-party repo is fragile, so it
+# runs last, after everything else has had a chance to install.
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
@@ -35,15 +37,4 @@ if ! command -v lazygit &>/dev/null; then
     success "lazygit installed."
 else
     success "lazygit already installed."
-fi
-
-if ! command -v smartgit &>/dev/null; then
-    info "Installing SmartGit…"
-    curl -fsSL https://www.syntevo.com/downloads/smartgit/smartgit-repository.pub | sudo gpg --dearmor -o /usr/share/keyrings/smartgit-archive-keyring.gpg
-    echo "deb [signed-by=/usr/share/keyrings/smartgit-archive-keyring.gpg] https://www.syntevo.com/downloads/smartgit/deb/ generic main" \
-        | sudo tee /etc/apt/sources.list.d/smartgit.list >/dev/null
-    sudo apt-get update -q
-    apt_install_if_missing smartgit
-else
-    success "SmartGit already installed."
 fi

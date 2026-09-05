@@ -22,7 +22,7 @@ module, or on a machine that already has some tools installed).
 |--------|----------|
 | `05-folders.sh` | Standard top-level folders: `~/org`, `~/com`, `~/projects` |
 | `10-essentials.sh` | System upgrade, `build-essential`, `curl`, `wget`, `jq`, `htop`, `tree`, `ripgrep`, `fd-find`, `bat` |
-| `20-git.sh` | `git` + global config, SSH key (`~/.ssh/id_ed25519`), `lazygit`, SmartGit |
+| `20-git.sh` | `git` + global config, SSH key (`~/.ssh/id_ed25519`), `lazygit` |
 | `30-python.sh` | `uv` |
 | `40-golang.sh` | Go (official tarball, `/usr/local/go`) |
 | `50-rust.sh` | Rust via `rustup` |
@@ -30,6 +30,13 @@ module, or on a machine that already has some tools installed).
 | `70-vscode.sh` | VS Code (extensions are managed manually, not by this script) |
 | `80-podman.sh` | Podman + `podman-compose` |
 | `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
+| `99-smartgit.sh` | SmartGit, via syntevo's own apt repo |
+
+`99-smartgit.sh` runs last on purpose: syntevo's repo/key setup has already
+proven flaky in practice (a 404 on their published key URL), so it's kept
+out of the way of everything else. If a module fails, `setup.sh` prints a
+warning and keeps going rather than aborting the whole run — re-run
+`./setup.sh` (or just the one failed module) once it's fixed.
 
 ## Skipping the apt update/upgrade of already-installed packages
 
