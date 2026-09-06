@@ -16,6 +16,21 @@ cd hello-linux-workstation
 that's missing, so it's safe to re-run any time (e.g. after adding a new
 module, or on a machine that already has some tools installed).
 
+## Using `just` (after the first run)
+
+The very first run has to be `./setup.sh` directly — `just` itself doesn't
+exist yet on a fresh machine (it's installed by `15-just.sh`). Once that's
+done, `Justfile` is there mainly to document and make convenient the
+commands you'd otherwise have to remember:
+
+```bash
+just setup          # re-run everything (same as ./setup.sh)
+just retry          # alias for the above, for after a module failed
+just module rust     # re-run just one module, by name or number
+just list            # show every module in run order
+just check           # bash -n syntax-check everything, no changes made
+```
+
 ## What it sets up
 
 | Module | Installs |
