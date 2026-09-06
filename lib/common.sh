@@ -39,8 +39,6 @@ apt_install_if_missing() {
 # Appends LINE to ~/.bashrc exactly once, guarded by MARKER (a comment).
 add_to_bashrc() {
     local marker="$1" line="$2"
-    grep -qF "$marker" "$HOME/.bashrc" 2>/dev/null || {
-        echo "$marker" >> "$HOME/.bashrc"
-        echo "$line" >> "$HOME/.bashrc"
-    }
+    grep -qF "$marker" "$HOME/.bashrc" 2>/dev/null || \
+        printf '\n%s\n%s\n' "$marker" "$line" >> "$HOME/.bashrc"
 }

@@ -16,12 +16,12 @@ if command -v smartgit &>/dev/null; then
 fi
 
 info "Installing SmartGit ${SMARTGIT_VERSION}…"
-curl -fLo /tmp/smartgit.tar.gz \
+SMARTGIT_ARCHIVE="$(mktemp --suffix=.tar.gz)"
+EXTRACT_DIR="$(mktemp -d)"
+trap 'rm -f "$SMARTGIT_ARCHIVE"; rm -rf "$EXTRACT_DIR"' EXIT
+curl -fLo "$SMARTGIT_ARCHIVE" \
     "https://download.smartgit.dev/smartgit/smartgit-${SMARTGIT_VERSION}-linux-amd64.tar.gz"
-
-EXTRACT_DIR=$(mktemp -d)
-tar -C "$EXTRACT_DIR" -xzf /tmp/smartgit.tar.gz
-rm -f /tmp/smartgit.tar.gz
+tar -C "$EXTRACT_DIR" -xzf "$SMARTGIT_ARCHIVE"
 
 # Don't assume the archive's internal layout — find the launcher wherever it lands.
 LAUNCHER=$(find "$EXTRACT_DIR" -maxdepth 3 -name "smartgit.sh" -path "*/bin/*" | head -1)
@@ -33,7 +33,6 @@ UNPACKED_ROOT=$(dirname "$(dirname "$LAUNCHER")")
 
 sudo rm -rf "$INSTALL_DIR"
 sudo mv "$UNPACKED_ROOT" "$INSTALL_DIR"
-rm -rf "$EXTRACT_DIR"
 sudo ln -sf "$INSTALL_DIR/bin/smartgit.sh" /usr/local/bin/smartgit
 success "SmartGit ${SMARTGIT_VERSION} installed to $INSTALL_DIR (launch: smartgit)."
 

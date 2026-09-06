@@ -37,11 +37,11 @@ if [[ -z "$ZIP_URL" ]]; then
 fi
 
 info "Installing balenaEtcher from $ZIP_URL…"
-curl -fLo /tmp/balena-etcher.zip "$ZIP_URL"
-
-EXTRACT_DIR=$(mktemp -d)
-unzip -q /tmp/balena-etcher.zip -d "$EXTRACT_DIR"
-rm -f /tmp/balena-etcher.zip
+ZIP_FILE="$(mktemp --suffix=.zip)"
+EXTRACT_DIR="$(mktemp -d)"
+trap 'rm -f "$ZIP_FILE"; rm -rf "$EXTRACT_DIR"' EXIT
+curl -fLo "$ZIP_FILE" "$ZIP_URL"
+unzip -q "$ZIP_FILE" -d "$EXTRACT_DIR"
 
 # Don't assume the archive's internal layout — find the main executable
 # wherever it lands (case-insensitive: "balenaEtcher" or "balena-etcher").
@@ -54,6 +54,5 @@ UNPACKED_ROOT=$(dirname "$BINARY")
 
 sudo rm -rf "$INSTALL_DIR"
 sudo mv "$UNPACKED_ROOT" "$INSTALL_DIR"
-rm -rf "$EXTRACT_DIR"
 sudo ln -sf "$INSTALL_DIR/$(basename "$BINARY")" /usr/local/bin/balena-etcher
 success "balenaEtcher installed to $INSTALL_DIR (launch: balena-etcher)."

@@ -10,6 +10,9 @@ if command -v just &>/dev/null; then
 else
     info "Installing just…"
     mkdir -p "$HOME/.local/bin"
-    curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to "$HOME/.local/bin"
+    INSTALLER="$(mktemp --suffix=.sh)"
+    trap 'rm -f "$INSTALLER"' EXIT
+    curl --proto '=https' --proto-redir '=https' --tlsv1.2 -sSf https://just.systems/install.sh -o "$INSTALLER"
+    bash "$INSTALLER" --to "$HOME/.local/bin"
     success "just installed to ~/.local/bin."
 fi

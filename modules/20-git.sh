@@ -32,10 +32,12 @@ if ! command -v lazygit &>/dev/null; then
     if ! LAZYGIT_VERSION=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*'); then
         die "Could not determine the latest lazygit version from GitHub's API."
     fi
-    curl -fLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-    tar -C /tmp -xzf /tmp/lazygit.tar.gz lazygit
-    sudo install /tmp/lazygit /usr/local/bin/lazygit
-    rm -f /tmp/lazygit.tar.gz /tmp/lazygit
+    LAZYGIT_ARCHIVE="$(mktemp --suffix=.tar.gz)"
+    LAZYGIT_EXTRACT_DIR="$(mktemp -d)"
+    trap 'rm -f "$LAZYGIT_ARCHIVE"; rm -rf "$LAZYGIT_EXTRACT_DIR"' EXIT
+    curl -fLo "$LAZYGIT_ARCHIVE" "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+    tar -C "$LAZYGIT_EXTRACT_DIR" -xzf "$LAZYGIT_ARCHIVE" lazygit
+    sudo install "$LAZYGIT_EXTRACT_DIR/lazygit" /usr/local/bin/lazygit
     success "lazygit installed."
 else
     success "lazygit already installed."

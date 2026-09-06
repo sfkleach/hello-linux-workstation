@@ -11,9 +11,10 @@ if command -v keybase &>/dev/null; then
 fi
 
 info "Installing Keybase…"
-curl -fLo /tmp/keybase_amd64.deb https://prerelease.keybase.io/keybase_amd64.deb
-sudo apt-get install -y /tmp/keybase_amd64.deb
-rm -f /tmp/keybase_amd64.deb
+KEYBASE_DEB="$(mktemp --suffix=.deb)"
+trap 'rm -f "$KEYBASE_DEB"' EXIT
+curl -fLo "$KEYBASE_DEB" https://prerelease.keybase.io/keybase_amd64.deb
+sudo apt-get install -y "$KEYBASE_DEB"
 success "Keybase installed."
 
 info "Launching run_keybase to finish setup (this opens the app for account setup)…"

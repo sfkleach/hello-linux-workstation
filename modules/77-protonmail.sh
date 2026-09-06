@@ -16,12 +16,13 @@ PROTONMAIL_VERSION="1.13.4"
 DEB_URL="https://proton.me/download/mail/linux/${PROTONMAIL_VERSION}/ProtonMail-desktop-beta.deb"
 
 info "Installing Proton Mail ${PROTONMAIL_VERSION}…"
-if ! curl -fLo /tmp/protonmail.deb "$DEB_URL"; then
+PROTONMAIL_DEB="$(mktemp --suffix=.deb)"
+trap 'rm -f "$PROTONMAIL_DEB"' EXIT
+if ! curl -fLo "$PROTONMAIL_DEB" "$DEB_URL"; then
     warn "Could not fetch Proton Mail from $DEB_URL"
     warn "Check https://proton.me/mail/download for the current version/URL and update this module."
     exit 1
 fi
 
-sudo apt-get install -y /tmp/protonmail.deb
-rm -f /tmp/protonmail.deb
+sudo apt-get install -y "$PROTONMAIL_DEB"
 success "Proton Mail ${PROTONMAIL_VERSION} installed."

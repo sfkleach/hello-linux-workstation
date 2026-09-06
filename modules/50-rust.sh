@@ -5,7 +5,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 if ! command -v rustup &>/dev/null; then
     info "Installing Rust via rustup…"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+    INSTALLER="$(mktemp --suffix=.sh)"
+    trap 'rm -f "$INSTALLER"' EXIT
+    curl --proto '=https' --proto-redir '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o "$INSTALLER"
+    sh "$INSTALLER" -y --no-modify-path
     success "Rust installed."
 else
     success "Rust already installed."

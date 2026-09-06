@@ -5,7 +5,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 if ! command -v uv &>/dev/null; then
     info "Installing uv…"
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    INSTALLER="$(mktemp --suffix=.sh)"
+    trap 'rm -f "$INSTALLER"' EXIT
+    curl --proto '=https' --proto-redir '=https' -LsSf https://astral.sh/uv/install.sh -o "$INSTALLER"
+    sh "$INSTALLER"
     success "uv installed."
 else
     success "uv already installed."

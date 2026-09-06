@@ -34,3 +34,6 @@ else
     success "Workstation setup complete!"
 fi
 warn "Start a new shell (or run: source ~/.bashrc) to pick up PATH changes."
+
+# Exit non-zero if anything failed, so callers/automation can detect it.
+[[ ${#FAILED_MODULES[@]} -eq 0 ]]
