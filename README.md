@@ -32,7 +32,7 @@ module, or on a machine that already has some tools installed).
 | `73-keepassxc.sh` | KeePassXC (Mint's native package) |
 | `75-chromium.sh` | Chromium (Mint's native package, not Ubuntu's Snap wrapper) |
 | `76-typora.sh` | Typora, via its own apt repo |
-| `77-protonmail-bridge.sh` | Proton Mail Bridge, from the official `.deb` |
+| `77-protonmail.sh` | Proton Mail desktop app, from the official `.deb` |
 | `80-podman.sh` | Podman + `podman-compose` |
 | `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
 | `98-keybase.sh` | Keybase, from the official `.deb`, then `run_keybase` to finish setup |
@@ -52,11 +52,13 @@ when you want a newer release. If a module fails, `setup.sh` prints a
 warning and keeps going rather than aborting the whole run — re-run
 `./setup.sh` (or just the one failed module) once it's fixed.
 
-`77-protonmail-bridge.sh` follows the same pattern as SmartGit: Proton
-doesn't publish an apt repo for Bridge, just versioned `.deb` downloads,
-so the version is a hardcoded `BRIDGE_VERSION` string — bump it from
-[the download page](https://proton.me/mail/bridge#download) if the
-module reports it can't fetch the current one.
+`77-protonmail.sh` follows the same pattern as SmartGit: Proton doesn't
+publish an apt repo for the desktop app, just versioned `.deb` downloads,
+so the version is a hardcoded `PROTONMAIL_VERSION` string — bump it from
+[the download page](https://proton.me/mail/download) if the module
+reports it can't fetch the current one. (An earlier attempt used Proton
+Mail Bridge instead, but it kept breaking itself via its own
+auto-updater, so it's been dropped in favor of the desktop app.)
 
 ## Skipping the apt update/upgrade of already-installed packages
 
