@@ -5,7 +5,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 if ! command -v fnm &>/dev/null; then
     info "Installing fnm…"
-    curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+    INSTALLER="$(mktemp --suffix=.sh)"
+    trap 'rm -f "$INSTALLER"' EXIT
+    curl --proto '=https' --proto-redir '=https' -fsSL https://fnm.vercel.app/install -o "$INSTALLER"
+    bash "$INSTALLER" --skip-shell
     success "fnm installed."
 else
     success "fnm already installed."
