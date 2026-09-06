@@ -14,11 +14,11 @@ else
 fi
 
 apt_install_if_missing \
-    build-essential \
+    build-essential:gcc \
     curl \
     wget \
-    ca-certificates \
-    gnupg \
+    ca-certificates:update-ca-certificates \
+    gnupg:gpg \
     unzip \
     jq \
     htop \

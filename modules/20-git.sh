@@ -29,7 +29,9 @@ fi
 
 if ! command -v lazygit &>/dev/null; then
     info "Installing lazygit…"
-    LAZYGIT_VERSION=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*')
+    if ! LAZYGIT_VERSION=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": *"v\K[^"]*'); then
+        die "Could not determine the latest lazygit version from GitHub's API."
+    fi
     curl -fLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
     tar -C /tmp -xzf /tmp/lazygit.tar.gz lazygit
     sudo install /tmp/lazygit /usr/local/bin/lazygit

@@ -18,6 +18,10 @@ module name:
     if [[ ${#matches[@]} -eq 0 ]]; then
         echo "No module matching '{{ name }}'." >&2
         exit 1
+    elif [[ ${#matches[@]} -gt 1 ]]; then
+        echo "Ambiguous module selector '{{ name }}' matches:" >&2
+        printf '  %s\n' "${matches[@]}" >&2
+        exit 1
     fi
     echo "Running ${matches[0]}"
     bash "${matches[0]}"

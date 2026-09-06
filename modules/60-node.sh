@@ -12,7 +12,9 @@ else
 fi
 
 export PATH="$HOME/.local/share/fnm:$PATH"
-eval "$(fnm env)"
+if command -v fnm &>/dev/null; then
+    eval "$(fnm env 2>/dev/null)" || true
+fi
 
 if ! fnm list | grep -q lts-latest 2>/dev/null; then
     info "Installing Node LTS via fnm…"
