@@ -13,13 +13,14 @@ retry: setup
 module name:
     #!/usr/bin/env bash
     set -euo pipefail
-    match=$(ls modules/*"{{ name }}"*.sh 2>/dev/null | head -1)
-    if [[ -z "$match" ]]; then
+    shopt -s nullglob
+    matches=(modules/*"{{ name }}"*.sh)
+    if [[ ${#matches[@]} -eq 0 ]]; then
         echo "No module matching '{{ name }}'." >&2
         exit 1
     fi
-    echo "Running $match"
-    bash "$match"
+    echo "Running ${matches[0]}"
+    bash "${matches[0]}"
 
 # List all modules in run order.
 list:

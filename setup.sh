@@ -8,8 +8,14 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$ROOT_DIR/lib/common.sh"
 
+shopt -s nullglob
+MODULES=("$ROOT_DIR"/modules/*.sh)
+if [[ ${#MODULES[@]} -eq 0 ]]; then
+    die "No modules found under $ROOT_DIR/modules/"
+fi
+
 FAILED_MODULES=()
-for module in "$ROOT_DIR"/modules/*.sh; do
+for module in "${MODULES[@]}"; do
     info "── Running $(basename "$module") ──"
     if ! bash "$module"; then
         warn "$(basename "$module") failed — continuing with the remaining modules."

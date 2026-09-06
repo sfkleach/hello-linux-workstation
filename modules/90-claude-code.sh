@@ -4,7 +4,9 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 export PATH="$HOME/.local/share/fnm:$PATH"
-eval "$(fnm env)" 2>/dev/null || true
+if command -v fnm &>/dev/null; then
+    eval "$(fnm env 2>/dev/null)" || true
+fi
 
 if ! command -v claude &>/dev/null; then
     info "Installing Claude Code CLI…"

@@ -11,4 +11,6 @@ export PATH="$PATH:$HOME/.local/bin"
 
 # fnm (Node version manager)
 export PATH="$HOME/.local/share/fnm:$PATH"
-eval "$(fnm env --use-on-cd)" 2>/dev/null || true
+if command -v fnm &>/dev/null; then
+    eval "$(fnm env --use-on-cd 2>/dev/null)" || true
+fi
