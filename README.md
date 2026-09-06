@@ -29,6 +29,7 @@ module, or on a machine that already has some tools installed).
 | `50-rust.sh` | Rust via `rustup` |
 | `60-node.sh` | `fnm` + Node LTS (only needed to install the Claude Code CLI below) |
 | `70-vscode.sh` | VS Code (extensions are managed manually, not by this script) |
+| `75-chromium.sh` | Chromium (Mint's native package, not Ubuntu's Snap wrapper) |
 | `80-podman.sh` | Podman + `podman-compose` |
 | `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
 | `98-keybase.sh` | Keybase, from the official `.deb`, then `run_keybase` to finish setup |
