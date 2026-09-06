@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 if ! command -v go &>/dev/null; then
-    GO_VERSION="1.23.6"
+    GO_VERSION="1.27.1"
     ARCH=$(uname -m); [[ "$ARCH" == x86_64 ]] && ARCH=amd64
     info "Installing Go ${GO_VERSION}…"
     curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz" -o /tmp/go.tar.gz
