@@ -22,6 +22,7 @@ module, or on a machine that already has some tools installed).
 |--------|----------|
 | `05-folders.sh` | Standard top-level folders: `~/org`, `~/com`, `~/projects` |
 | `10-essentials.sh` | System upgrade, `build-essential`, `curl`, `wget`, `jq`, `htop`, `tree`, `ripgrep`, `fd-find`, `bat` |
+| `15-just.sh` | `just`, via its official prebuilt-binary installer, to `~/.local/bin` |
 | `20-git.sh` | `git` + global config, SSH key (`~/.ssh/id_ed25519`), `lazygit` |
 | `30-python.sh` | `uv` |
 | `40-golang.sh` | Go (official tarball, `/usr/local/go`) |
@@ -30,17 +31,22 @@ module, or on a machine that already has some tools installed).
 | `70-vscode.sh` | VS Code (extensions are managed manually, not by this script) |
 | `80-podman.sh` | Podman + `podman-compose` |
 | `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
+| `98-keybase.sh` | Keybase, from the official `.deb`, then `run_keybase` to finish setup |
 | `99-smartgit.sh` | SmartGit, from the official tarball, unpacked to `/opt/smartgit`, with its desktop menu item |
 
-`99-smartgit.sh` runs last on purpose: syntevo doesn't publish a `.deb`
-they recommend (an earlier apt-repo approach here also proved flaky — a
-404 on their published key URL), so it's installed from the tarball
-instead and kept out of the way of everything else. The version is a
-hardcoded string in the script — bump `SMARTGIT_VERSION` from
-[the download page](https://www.syntevo.com/smartgit/download/) when you
-want a newer release. If a module fails, `setup.sh` prints a warning and
-keeps going rather than aborting the whole run — re-run `./setup.sh` (or
-just the one failed module) once it's fixed.
+`just` defaults to the prebuilt-binary install. To build it from source
+instead, `cargo install just` works fine once `50-rust.sh` has run.
+
+`98-keybase.sh` and `99-smartgit.sh` run last on purpose: both depend on
+third-party download URLs outside apt, which have already proven flakier
+in practice than a normal `apt install` (SmartGit's old apt-repo approach
+hit a 404 on syntevo's published key). `run_keybase` opens the app for
+interactive account setup — that last step isn't scriptable. SmartGit's
+version is a hardcoded string in its module — bump `SMARTGIT_VERSION`
+from [the download page](https://www.syntevo.com/smartgit/download/)
+when you want a newer release. If a module fails, `setup.sh` prints a
+warning and keeps going rather than aborting the whole run — re-run
+`./setup.sh` (or just the one failed module) once it's fixed.
 
 ## Skipping the apt update/upgrade of already-installed packages
 
