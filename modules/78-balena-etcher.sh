@@ -20,10 +20,18 @@ sudo apt-get install -y libfuse2t64 2>/dev/null || sudo apt-get install -y libfu
     || warn "Could not install libfuse2/libfuse2t64 — AppImages may fail to run without FUSE."
 
 info "Fetching latest balenaEtcher release info…"
-APPIMAGE_URL=$(curl -fsSL "https://api.github.com/repos/balena-io/etcher/releases/latest" \
+if ! RELEASE_JSON=$(curl -fsSL "https://api.github.com/repos/balena-io/etcher/releases/latest"); then
+    warn "Could not reach GitHub's API to look up the latest balenaEtcher release."
+    warn "Check https://github.com/balena-io/etcher/releases and update this module."
+    exit 1
+fi
+
+# grep exits 1 on no match, which would otherwise trip set -e/pipefail before
+# we get a chance to report a useful error — so don't let that kill the script.
+APPIMAGE_URL=$(echo "$RELEASE_JSON" \
     | grep -o '"browser_download_url": *"[^"]*x64\.AppImage"' \
     | grep -o 'https://[^"]*' \
-    | head -1)
+    | head -1) || true
 
 if [[ -z "$APPIMAGE_URL" ]]; then
     warn "Could not find a balenaEtcher AppImage in the latest GitHub release."
