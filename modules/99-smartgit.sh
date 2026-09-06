@@ -36,3 +36,11 @@ sudo mv "$UNPACKED_ROOT" "$INSTALL_DIR"
 rm -rf "$EXTRACT_DIR"
 sudo ln -sf "$INSTALL_DIR/bin/smartgit.sh" /usr/local/bin/smartgit
 success "SmartGit ${SMARTGIT_VERSION} installed to $INSTALL_DIR (launch: smartgit)."
+
+if [[ -x "$INSTALL_DIR/bin/add-menuitem.sh" ]]; then
+    info "Creating SmartGit menu item…"
+    "$INSTALL_DIR/bin/add-menuitem.sh"
+    success "SmartGit menu item created."
+else
+    warn "No bin/add-menuitem.sh found under $INSTALL_DIR — skipping menu item."
+fi

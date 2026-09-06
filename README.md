@@ -30,7 +30,7 @@ module, or on a machine that already has some tools installed).
 | `70-vscode.sh` | VS Code (extensions are managed manually, not by this script) |
 | `80-podman.sh` | Podman + `podman-compose` |
 | `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
-| `99-smartgit.sh` | SmartGit, from the official tarball, unpacked to `/opt/smartgit` |
+| `99-smartgit.sh` | SmartGit, from the official tarball, unpacked to `/opt/smartgit`, with its desktop menu item |
 
 `99-smartgit.sh` runs last on purpose: syntevo doesn't publish a `.deb`
 they recommend (an earlier apt-repo approach here also proved flaky — a
