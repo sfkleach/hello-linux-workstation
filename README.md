@@ -48,6 +48,7 @@ just check           # bash -n syntax-check everything, no changes made
 | `75-chromium.sh` | Chromium (Mint's native package, not Ubuntu's Snap wrapper) |
 | `76-typora.sh` | Typora, via its own apt repo |
 | `77-protonmail.sh` | Proton Mail desktop app, from the official `.deb` |
+| `78-balena-etcher.sh` | balenaEtcher, via balena's own Cloudsmith apt repo |
 | `80-podman.sh` | Podman + `podman-compose` |
 | `90-claude-code.sh` | Claude Code CLI (`npm install -g @anthropic-ai/claude-code`) |
 | `98-keybase.sh` | Keybase, from the official `.deb`, then `run_keybase` to finish setup |
