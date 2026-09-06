@@ -32,3 +32,7 @@ check:
     for f in setup.sh lib/*.sh modules/*.sh; do
         bash -n "$f" && echo "OK: $f"
     done
+
+# Report any hardcoded tool versions (Go, SmartGit, Proton Mail) that are behind upstream. Read-only.
+versions:
+    @./scripts/check-versions.sh

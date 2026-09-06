@@ -26,9 +26,10 @@ commands you'd otherwise have to remember:
 ```bash
 just setup          # re-run everything (same as ./setup.sh)
 just retry          # alias for the above, for after a module failed
-just module rust     # re-run just one module, by name or number
-just list            # show every module in run order
-just check           # bash -n syntax-check everything, no changes made
+just module rust    # re-run just one module, by name or number
+just list           # show every module in run order
+just check          # bash -n syntax-check everything, no changes made
+just versions       # report which hardcoded tool versions are behind upstream
 ```
 
 ## What it sets up
@@ -105,3 +106,21 @@ Since modules are just standalone scripts, you can re-run one on its own:
 ```bash
 ./modules/50-rust.sh
 ```
+
+## Checking for stale hardcoded versions
+
+Most tools install "whatever is currently latest" automatically (rustup,
+uv, fnm, the `just`/lazygit/balenaEtcher installers all check upstream
+themselves). Three don't, because they have no real update API and are
+pinned to a version string that has to be bumped by hand: Go
+(`GO_VERSION` in `40-golang.sh`), SmartGit (`SMARTGIT_VERSION` in
+`99-smartgit.sh`), and Proton Mail (`PROTONMAIL_VERSION` in
+`77-protonmail.sh`).
+
+`scripts/check-versions.sh` (or `just versions`) checks those three
+against upstream and reports any that are behind — Go via its official
+JSON API, SmartGit and Proton Mail by best-effort scraping of their
+download pages, since neither publishes an API. It's read-only: it never
+installs or edits anything, just prints a report. A `latest=?` result
+means the scrape didn't find a match (page changed, or blocked) — check
+the download page by hand in that case.
