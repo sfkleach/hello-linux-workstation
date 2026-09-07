@@ -18,13 +18,20 @@ fi
 git config --global init.defaultBranch main
 success "Git configured."
 
-if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
-    info "Generating SSH key…"
-    mkdir -p "$HOME/.ssh"
+# Only generate a key on a machine with none at all. Checking for the single
+# literal filename id_ed25519 isn't enough — plenty of existing setups keep
+# their real key under a different name (e.g. git_ed25519) referenced from
+# ~/.ssh/config, and blindly generating id_ed25519 alongside it doesn't
+# touch that key, but does add a new, unregistered identity that OpenSSH
+# will also offer — which can break auth (e.g. hitting the server's
+# MaxAuthTries) even though nothing was actually deleted.
+mkdir -p "$HOME/.ssh"
+if [[ -z "$(find "$HOME/.ssh" -maxdepth 1 -name '*.pub' -print -quit 2>/dev/null)" ]]; then
+    info "No existing SSH keys found — generating one…"
     ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f "$HOME/.ssh/id_ed25519" -N ""
     success "SSH key generated at ~/.ssh/id_ed25519 — add ~/.ssh/id_ed25519.pub to GitHub/GitLab."
 else
-    success "SSH key already present."
+    success "Existing SSH key(s) found in ~/.ssh — leaving them alone."
 fi
 
 if ! command -v lazygit &>/dev/null; then

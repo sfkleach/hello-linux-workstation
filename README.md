@@ -39,7 +39,7 @@ just versions       # report which hardcoded tool versions are behind upstream
 | `05-folders.sh` | Standard top-level folders: `~/org`, `~/com`, `~/projects` |
 | `10-essentials.sh` | System upgrade (once per day), `build-essential`, `curl`, `wget`, `jq`, `htop`, `tree`, `ripgrep`, `fd-find`, `bat` |
 | `15-just.sh` | `just`, via its official prebuilt-binary installer, to `~/.local/bin` |
-| `20-git.sh` | `git` + global config, SSH key (`~/.ssh/id_ed25519`), `lazygit` |
+| `20-git.sh` | `git` + global config, SSH key (only if `~/.ssh` has none at all), `lazygit` |
 | `30-python.sh` | `uv` |
 | `40-golang.sh` | Go (official tarball, `/usr/local/go`) |
 | `50-rust.sh` | Rust via `rustup` |
